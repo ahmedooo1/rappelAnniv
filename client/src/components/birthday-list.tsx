@@ -13,9 +13,10 @@ interface BirthdayListProps {
   birthdays: Birthday[];
   isLoading: boolean;
   onSearch: (query: string) => void;
+  onEdit?: (id: number) => void;
 }
 
-export default function BirthdayList({ birthdays, isLoading, onSearch }: BirthdayListProps) {
+export default function BirthdayList({ birthdays, isLoading, onSearch, onEdit }: BirthdayListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
