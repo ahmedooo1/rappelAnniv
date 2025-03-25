@@ -1,6 +1,6 @@
-import { Container } from "@/components/ui/container";
-import BirthdayForm from "@/components/birthday-form";
-import BirthdayList from "@/components/birthday-list";
+import { Container } from "../components/ui/container";
+import BirthdayForm from "../components/birthday-form";
+import BirthdayList from "../components/birthday-list";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -19,7 +19,7 @@ export default function Home() {
   });
 
   const { data: filteredBirthdays, isLoading: isSearchLoading } = useQuery({
-    queryKey: ['/api/birthdays/search'],
+    queryKey: ['/api/birthdays/search', searchQuery],
     queryFn: async () => {
       const response = await fetch(`/api/birthdays/search?q=${encodeURIComponent(searchQuery)}`);
       if (!response.ok) {
