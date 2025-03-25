@@ -9,6 +9,13 @@ export default function Home() {
   
   const { data: birthdays, isLoading, refetch } = useQuery({
     queryKey: ['/api/birthdays'],
+    queryFn: async () => {
+      const response = await fetch('/api/birthdays');
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des anniversaires');
+      }
+      return response.json();
+    },
   });
 
   const { data: filteredBirthdays, isLoading: isSearchLoading } = useQuery({
