@@ -12,7 +12,14 @@ export default function Home() {
   });
 
   const { data: filteredBirthdays, isLoading: isSearchLoading } = useQuery({
-    queryKey: ['/api/birthdays/search', searchQuery],
+    queryKey: ['/api/birthdays/search'],
+    queryFn: async () => {
+      const response = await fetch(`/api/birthdays/search?q=${encodeURIComponent(searchQuery)}`);
+      if (!response.ok) {
+        throw new Error('Erreur lors de la recherche');
+      }
+      return response.json();
+    },
     enabled: Boolean(searchQuery),
   });
 
