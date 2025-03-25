@@ -112,9 +112,10 @@ export default function Home() {
           <div className="lg:w-2/3">
             <BirthdayList 
               birthdays={displayBirthdays || []} 
-              isLoading={isLoading || isSearchLoading} 
+              isLoading={isLoading || isSearchLoading || deleteMutation.isPending} 
               onSearch={handleSearch}
               onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         </div>
