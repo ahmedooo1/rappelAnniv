@@ -1,11 +1,16 @@
 import { Container } from "../components/ui/container";
 import BirthdayForm from "../components/birthday-form";
+import BirthdayEditForm from "../components/birthday-edit-form";
 import BirthdayList from "../components/birthday-list";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { queryClient } from "../lib/queryClient";
+import { useToast } from "../hooks/use-toast";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [editingBirthdayId, setEditingBirthdayId] = useState<number | null>(null);
+  const { toast } = useToast();
   
   const { data: birthdays, isLoading, refetch } = useQuery({
     queryKey: ['/api/birthdays'],
@@ -34,6 +39,53 @@ export default function Home() {
     setSearchQuery(query);
   };
 
+  const handleEdit = (id: number) => {
+    setEditingBirthdayId(id);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingBirthdayId(null);
+  };
+
+  const handleEditSuccess = () => {
+    setEditingBirthdayId(null);
+    refetch();
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/birthdays/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erreur lors de la suppression de l\'anniversaire');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/birthdays'] });
+      toast({
+        title: "Anniversaire supprimé",
+        description: "L'anniversaire a été supprimé avec succès",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erreur",
+        description: `Erreur lors de la suppression: ${error instanceof Error ? error.message : 'Erreur inconnue'}`,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleDelete = (id: number) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet anniversaire ?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
   const displayBirthdays = searchQuery ? filteredBirthdays : birthdays;
 
   return (
@@ -46,7 +98,15 @@ export default function Home() {
 
         <div className="lg:flex lg:space-x-8">
           <div className="lg:w-1/3 mb-8 lg:mb-0">
-            <BirthdayForm onSuccess={() => refetch()} />
+            {editingBirthdayId ? (
+              <BirthdayEditForm 
+                birthdayId={editingBirthdayId} 
+                onSuccess={handleEditSuccess} 
+                onCancel={handleCancelEdit} 
+              />
+            ) : (
+              <BirthdayForm onSuccess={() => refetch()} />
+            )}
           </div>
           
           <div className="lg:w-2/3">
@@ -54,6 +114,7 @@ export default function Home() {
               birthdays={displayBirthdays || []} 
               isLoading={isLoading || isSearchLoading} 
               onSearch={handleSearch}
+              onEdit={handleEdit}
             />
           </div>
         </div>

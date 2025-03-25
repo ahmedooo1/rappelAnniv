@@ -6,6 +6,7 @@ export interface IStorage {
   searchBirthdays(query: string): Promise<Birthday[]>;
   updateBirthday(id: number, birthday: InsertBirthday): Promise<Birthday | null>;
   getBirthdayById(id: number): Promise<Birthday | null>;
+  deleteBirthday(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -65,6 +66,14 @@ export class MemStorage implements IStorage {
     const updatedBirthday = toBirthday(birthday, id);
     this.birthdays.set(id, updatedBirthday);
     return updatedBirthday;
+  }
+  
+  async deleteBirthday(id: number): Promise<boolean> {
+    if (!this.birthdays.has(id)) {
+      return false;
+    }
+    
+    return this.birthdays.delete(id);
   }
 }
 

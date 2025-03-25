@@ -88,6 +88,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route to delete a birthday
+  app.delete("/api/birthdays/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "ID invalide" });
+      }
+
+      const success = await storage.deleteBirthday(id);
+      if (!success) {
+        return res.status(404).json({ message: "Anniversaire non trouvé" });
+      }
+
+      res.status(200).json({ message: "Anniversaire supprimé avec succès" });
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la suppression de l'anniversaire" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

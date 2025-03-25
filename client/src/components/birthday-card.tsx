@@ -1,4 +1,4 @@
-import { Calendar, Edit2 } from "lucide-react";
+import { Calendar, Edit2, Trash2 } from "lucide-react";
 import { formatDate } from "@/utils/date-utils";
 import { type Birthday } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
@@ -9,9 +9,10 @@ interface BirthdayCardProps {
   daysUntil: number;
   isUpcoming: boolean;
   onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
 }
 
-export default function BirthdayCard({ birthday, daysUntil, isUpcoming, onEdit }: BirthdayCardProps) {
+export default function BirthdayCard({ birthday, daysUntil, isUpcoming, onEdit, onDelete }: BirthdayCardProps) {
   const formattedDate = formatDate(new Date(birthday.birthdate), daysUntil);
   
   return (
@@ -50,6 +51,18 @@ export default function BirthdayCard({ birthday, daysUntil, isUpcoming, onEdit }
               title="Modifier"
             >
               <Edit2 className="h-4 w-4 text-gray-500" />
+            </Button>
+          )}
+          
+          {onDelete && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-red-600 hover:text-red-800 hover:bg-red-50" 
+              onClick={() => onDelete(birthday.id)}
+              title="Supprimer"
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
           )}
         </div>

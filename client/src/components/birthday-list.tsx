@@ -70,6 +70,7 @@ export default function BirthdayList({ birthdays, isLoading, onSearch, onEdit }:
                   birthday={birthday}
                   daysUntil={daysUntil}
                   isUpcoming={isUpcoming}
+                  onEdit={onEdit}
                 />
               );
             })
