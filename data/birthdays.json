@@ -1,0 +1,35 @@
+{
+  "birthdays": [
+    {
+      "id": 1,
+      "name": "Marie Dubois",
+      "birthdate": "2023-05-15",
+      "message": "N'oubliez pas de lui souhaiter son anniversaire!"
+    },
+    {
+      "id": 2,
+      "name": "Thomas Martin",
+      "birthdate": "2023-05-27",
+      "message": "Aime les gâteaux au chocolat"
+    },
+    {
+      "id": 3,
+      "name": "Sophie Bernard",
+      "birthdate": "2023-06-13",
+      "message": ""
+    },
+    {
+      "id": 4,
+      "name": "Jean Petit",
+      "birthdate": "2023-05-17",
+      "message": "Fête ses 40 ans cette année!"
+    },
+    {
+      "id": 5,
+      "name": "Pierre Durand",
+      "birthdate": "2023-06-26",
+      "message": "Apprécie les cartes personnalisées"
+    }
+  ],
+  "currentId": 6
+}
