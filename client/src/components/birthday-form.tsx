@@ -17,6 +17,7 @@ const birthdayFormSchema = insertBirthdaySchema.extend({
   name: z.string().min(1, "Le nom est requis"),
   birthdate: z.string().min(1, "La date de naissance est requise"),
   message: z.string().optional(),
+  groupId: z.number().int().positive(), //Added groupId validation
 });
 
 type BirthdayFormValues = z.infer<typeof birthdayFormSchema>;
@@ -34,6 +35,7 @@ export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
       name: "",
       birthdate: "",
       message: "",
+      groupId: 1, // Groupe par défaut
     },
   });
 
@@ -73,7 +75,7 @@ export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
     <Card className="bg-white shadow-md">
       <CardContent className="pt-6">
         <h2 className="text-xl font-semibold mb-4">Ajouter un anniversaire</h2>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -93,7 +95,7 @@ export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="birthdate"
@@ -111,7 +113,7 @@ export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="message"
@@ -130,7 +132,21 @@ export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
                 </FormItem>
               )}
             />
-            
+
+            <FormField
+              control={form.control}
+              name="groupId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium text-gray-700">Groupe</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent"/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button 
               type="submit" 
               className="w-full bg-[#4F46E5] hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"

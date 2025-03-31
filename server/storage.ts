@@ -101,11 +101,16 @@ export async function getBirthdayById(id: number): Promise<Birthday | null> {
 }
 
 export async function createBirthday(birthday: Omit<Birthday, 'id'>): Promise<Birthday> {
-  const [result] = await pool.query(
-    'INSERT INTO birthdays (name, birthdate, groupId) VALUES (?, ?, ?)',
-    [birthday.name, birthday.birthdate, birthday.groupId]
-  );
-  return { id: result.insertId, ...birthday };
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO birthdays (name, birthdate, groupId) VALUES (?, ?, ?)',
+      [birthday.name, birthday.birthdate, birthday.groupId || 1]
+    );
+    return { id: result.insertId, ...birthday };
+  } catch (error) {
+    console.error('Erreur lors de la création:', error);
+    throw error;
+  }
 }
 
 export async function updateBirthday(id: number, birthday: Omit<Birthday, 'id'>): Promise<Birthday | null> {
