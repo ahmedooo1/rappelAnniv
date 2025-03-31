@@ -47,7 +47,17 @@ export const getQueryFn: <T>(options: {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: getQueryFn({ on401: "throw" }),
+      queryFn: async ({ queryKey }) => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(queryKey[0] as string, {
+          headers: {
+            ...(token && { 'Authorization': `Bearer ${token}` })
+          },
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      },
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
