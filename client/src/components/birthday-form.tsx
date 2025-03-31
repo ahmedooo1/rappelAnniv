@@ -13,11 +13,11 @@ import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 // Extend schema for client-side validation
-const birthdayFormSchema = insertBirthdaySchema.extend({
+const birthdayFormSchema = z.object({
   name: z.string().min(1, "Le nom est requis"),
   birthdate: z.string().min(1, "La date de naissance est requise"),
   message: z.string().optional(),
-  groupId: z.number().int().positive(), //Added groupId validation
+  groupId: z.number().default(1),
 });
 
 type BirthdayFormValues = z.infer<typeof birthdayFormSchema>;
@@ -35,7 +35,40 @@ export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
       name: "",
       birthdate: "",
       message: "",
-      groupId: 1, // Groupe par défaut
+      groupId: 1,
+    },
+  });
+
+  const birthdayMutation = useMutation({
+    mutationFn: async (data: BirthdayFormValues) => {
+      const response = await fetch('/api/birthdays', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'ajout de l\'anniversaire');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/birthdays'] });
+      form.reset();
+      toast({
+        title: "Succès",
+        description: "L'anniversaire a été ajouté avec succès",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
