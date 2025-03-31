@@ -1,0 +1,26 @@
+
+PS C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker> npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+7:11:56 PM [express] serving on port 5000
+19:11:58 [vite] Internal server error: Failed to resolve import "react-router-dom" from "client/src/components/group-card.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/client/src/components/group-card.tsx:4:28        
+  18 |  import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+  19 |  import { Button } from "./ui/button";
+  20 |  import { useNavigate } from "react-router-dom";
+     |                               ^
+  21 |  export function GroupCard({ group }) {
+  22 |    _s();
+      at TransformPluginContext._formatError (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:49257:41)
+      at TransformPluginContext.error (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:49252:16)
+      at normalizeUrl (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:64199:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async <anonymous> (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:64331:39)
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:64258:7)
+      at async PluginContainer.transform (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:49098:18)
+      at async loadAndTransform (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\vite\dist\node\chunks\dep-CHZK6zbr.js:51931:27)
+PS C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker> 
