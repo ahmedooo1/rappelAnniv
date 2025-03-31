@@ -169,6 +169,19 @@ async function getBirthdaysByGroup(groupId: number): Promise<Birthday[]> {
   return rows;
 }
 
+async function validateAdminToken(token: string): Promise<User | null> {
+  try {
+    const [userId] = Buffer.from(token, 'base64').toString().split('-');
+    const user = await getUserById(parseInt(userId));
+    if (user && user.role === 'ADMIN') {
+      return user;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export const storage = {
   createUser,
   validateUser,
