@@ -1,29 +1,47 @@
-import { pgTable, text, serial, date } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+
 import { z } from "zod";
 
-export const birthdays = pgTable("birthdays", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  birthdate: date("birthdate").notNull(),
-  message: text("message").default(""),
+export const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  role: z.enum(["ADMIN", "GROUP_LEADER", "MEMBER"]),
+  groupId: z.number().optional(),
 });
 
-export const insertBirthdaySchema = createInsertSchema(birthdays).pick({
-  name: true,
-  birthdate: true,
-  message: true,
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
 });
 
-export type InsertBirthday = z.infer<typeof insertBirthdaySchema>;
-export type Birthday = typeof birthdays.$inferSelect;
+export const groupSchema = z.object({
+  name: z.string().min(3),
+  description: z.string().optional(),
+});
 
-// Helper function to convert InsertBirthday to Birthday with an ID
-export function toBirthday(insert: InsertBirthday, id: number): Birthday {
-  return {
-    id,
-    name: insert.name,
-    birthdate: insert.birthdate,
-    message: insert.message ?? null
-  };
-}
+export const birthdaySchema = z.object({
+  name: z.string().min(2),
+  birthdate: z.string(),
+  message: z.string().optional(),
+  groupId: z.number(),
+});
+
+export type User = {
+  id: number;
+  email: string;
+  role: "ADMIN" | "GROUP_LEADER" | "MEMBER";
+  groupId?: number;
+};
+
+export type Group = {
+  id: number;
+  name: string;
+  description?: string;
+};
+
+export type Birthday = {
+  id: number;
+  name: string;
+  birthdate: string;
+  message?: string;
+  groupId: number;
+};
