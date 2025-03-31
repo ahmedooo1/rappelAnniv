@@ -1,4 +1,3 @@
-
 import * as mysql from 'mysql2/promise';
 import { Birthday, Group, User } from '@shared/schema';
 import * as bcrypt from 'bcryptjs';
@@ -20,7 +19,7 @@ async function initDatabase() {
     // Create database if not exists
     await conn.query(`CREATE DATABASE IF NOT EXISTS ${process.env.MYSQL_DATABASE || 'birthday_app'}`);
     await conn.query(`USE ${process.env.MYSQL_DATABASE || 'birthday_app'}`);
-    
+
     // Create tables
     await conn.query(`
       CREATE TABLE IF NOT EXISTS groups (
@@ -52,22 +51,84 @@ async function initDatabase() {
         FOREIGN KEY (groupId) REFERENCES groups(id)
       )
     `);
-
-    await conn.query(`
-      ALTER TABLE groups ADD FOREIGN KEY (leader_id) REFERENCES users(id)
-    `);
-    
-    console.log('Database initialized successfully');
-  } catch (err) {
-    console.error('Error initializing database:', err);
-    throw err;
   } finally {
     conn.release();
   }
 }
 
+// User functions
+async function createUser(email: string, password: string, role: string): Promise<User> {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const [result] = await pool.query(
+    'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
+    [email, hashedPassword, role]
+  );
+  return { id: result.insertId, email, role, password: hashedPassword };
+}
+
+async function validateUser(email: string, password: string): Promise<User | null> {
+  const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+  if (rows.length === 0) return null;
+
+  const user = rows[0];
+  const valid = await bcrypt.compare(password, user.password);
+  return valid ? user : null;
+}
+
+async function getUserByEmail(email: string): Promise<User | null> {
+  const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
+// Group functions
+async function createGroup(name: string, description: string, leaderId: number): Promise<Group> {
+  const [result] = await pool.query(
+    'INSERT INTO groups (name, description, leader_id) VALUES (?, ?, ?)',
+    [name, description, leaderId]
+  );
+  return { id: result.insertId, name, description };
+}
+
+// Birthday functions
+export async function getAllBirthdays(): Promise<Birthday[]> {
+  const [rows] = await pool.query('SELECT * FROM birthdays');
+  return rows;
+}
+
+export async function getBirthdayById(id: number): Promise<Birthday | null> {
+  const [rows] = await pool.query('SELECT * FROM birthdays WHERE id = ?', [id]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
+export async function createBirthday(birthday: Omit<Birthday, 'id'>): Promise<Birthday> {
+  const [result] = await pool.query(
+    'INSERT INTO birthdays (name, birthdate, groupId) VALUES (?, ?, ?)',
+    [birthday.name, birthday.birthdate, birthday.groupId]
+  );
+  return { id: result.insertId, ...birthday };
+}
+
+export async function updateBirthday(id: number, birthday: Omit<Birthday, 'id'>): Promise<Birthday | null> {
+  const [result] = await pool.query(
+    'UPDATE birthdays SET name = ?, birthdate = ?, groupId = ? WHERE id = ?',
+    [birthday.name, birthday.birthdate, birthday.groupId, id]
+  );
+  return result.affectedRows > 0 ? { id, ...birthday } : null;
+}
+
+export async function deleteBirthday(id: number): Promise<boolean> {
+  const [result] = await pool.query('DELETE FROM birthdays WHERE id = ?', [id]);
+  return result.affectedRows > 0;
+}
+
+export async function searchBirthdays(query: string): Promise<Birthday[]> {
+  const [rows] = await pool.query('SELECT * FROM birthdays WHERE name LIKE ?', [`%${query}%`]);
+  return rows;
+}
+
+
 // Initialize database on startup
-initDatabase();
+initDatabase().catch(console.error);
 
 const mailer = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -78,77 +139,18 @@ const mailer = nodemailer.createTransport({
   },
 });
 
-export class Storage {
-  async createUser(email: string, password: string, role: string, groupId?: number): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const [result] = await pool.execute(
-      'INSERT INTO users (email, password, role, groupId) VALUES (?, ?, ?, ?)',
-      [email, hashedPassword, role, groupId]
-    );
-    return { id: result.insertId, email, role, groupId } as User;
-  }
-
-  async validateUser(email: string, password: string): Promise<User | null> {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
-    const user = rows[0];
-    if (!user || !await bcrypt.compare(password, user.password)) {
-      return null;
-    }
-    return user as User;
-  }
-
-  async createGroup(name: string, description?: string): Promise<Group> {
-    const [result] = await pool.execute(
-      'INSERT INTO groups (name, description) VALUES (?, ?)',
-      [name, description]
-    );
-    return { id: result.insertId, name, description } as Group;
-  }
-
-  async getBirthdaysByGroup(groupId: number): Promise<Birthday[]> {
-    const [rows] = await pool.execute(
-      'SELECT * FROM birthdays WHERE groupId = ?',
-      [groupId]
-    );
-    return rows as Birthday[];
-  }
-
-  async createBirthday(data: Omit<Birthday, 'id'>): Promise<Birthday> {
-    const [result] = await pool.execute(
-      'INSERT INTO birthdays (name, birthdate, groupId) VALUES (?, ?, ?)',
-      [data.name, data.birthdate, data.groupId]
-    );
-    return { id: result.insertId, ...data } as Birthday;
-  }
-
-  async getUserByEmail(email: string): Promise<User | null> {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
-    return rows[0] || null;
-}
-
-async getUsersByGroup(groupId: number): Promise<User[]> {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE groupId = ?', [groupId]);
-    return rows as User[];
-}
-
-async addUserToGroup(userId: number, groupId: number): Promise<void> {
-    await pool.execute('UPDATE users SET groupId = ? WHERE id = ?', [groupId, userId]);
-}
-
-async removeUserFromGroup(userId: number): Promise<void> {
-    await pool.execute('UPDATE users SET groupId = NULL WHERE id = ?', [userId]);
-}
-
-async createAdmin(email: string, password: string): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const [result] = await pool.execute(
-        'INSERT INTO users (email, password, role) VALUES (?, ?, "ADMIN")',
-        [email, hashedPassword]
-    );
-    return { id: result.insertId, email, role: 'ADMIN' } as User;
-}
-
-async checkUpcomingBirthdays() {
+export const storage = {
+  createUser,
+  validateUser,
+  getUserByEmail,
+  createGroup,
+  getAllBirthdays,
+  getBirthdayById,
+  createBirthday,
+  updateBirthday,
+  deleteBirthday,
+  searchBirthdays,
+  checkUpcomingBirthdays: async function() {
     const [birthdays] = await pool.execute(`
       SELECT b.*, g.name as group_name, u.email 
       FROM birthdays b 
@@ -168,6 +170,4 @@ async checkUpcomingBirthdays() {
       });
     }
   }
-}
-
-export const storage = new Storage();
+};
