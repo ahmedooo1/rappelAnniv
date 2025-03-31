@@ -84,3 +84,32 @@ export function LoginForm() {
     </form>
   )
 }
+import { useForm } from "react-hook-form";
+import { login } from "@/lib/auth";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+
+interface LoginFormProps {
+  onSuccess: () => void;
+}
+
+export function LoginForm({ onSuccess }: LoginFormProps) {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await login(data.email, data.password);
+      onSuccess();
+    } catch (error) {
+      console.error("Erreur de connexion:", error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Input {...register("email")} type="email" placeholder="Email" required />
+      <Input {...register("password")} type="password" placeholder="Mot de passe" required />
+      <Button type="submit">Se connecter</Button>
+    </form>
+  );
+}
