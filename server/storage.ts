@@ -150,9 +150,26 @@ const mailer = nodemailer.createTransport({
   },
 });
 
+async function getGroupById(id: number): Promise<Group | null> {
+  const [rows] = await pool.query('SELECT * FROM groups WHERE id = ?', [id]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
+async function addUserToGroup(userId: number, groupId: number): Promise<void> {
+  await pool.query('UPDATE users SET groupId = ? WHERE id = ?', [groupId, userId]);
+}
+
+async function getBirthdaysByGroup(groupId: number): Promise<Birthday[]> {
+  const [rows] = await pool.query('SELECT * FROM birthdays WHERE groupId = ?', [groupId]);
+  return rows;
+}
+
 export const storage = {
   createUser,
   validateUser,
+  getGroupById,
+  addUserToGroup,
+  getBirthdaysByGroup,
   getUserByEmail,
   createGroup,
   getAllBirthdays,
