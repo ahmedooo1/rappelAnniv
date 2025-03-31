@@ -1,0 +1,77 @@
+
+      at transform.next (<anonymous>)
+      at step (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\gensync\index.js:261:32)     
+PS C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker> npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+7:01:36 PM [express] serving on port 5000
+19:01:39 [vite] Internal server error: C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\client\src\components\birthday-form.tsx: Identifier 'birthdayMutation' has already been declared. (75:8)
+
+  73 |   });
+  74 |
+> 75 |   const birthdayMutation = useMutation({
+     |         ^
+  76 |     mutationFn: async (data: BirthdayFormValues) => {
+  77 |       // Convert birthdate string to Date object for the API
+  78 |       const formattedData = {
+  Plugin: vite:react-babel
+  File: C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/client/src/components/birthday-form.tsx:75:8     
+  74 |
+  75 |    const birthdayMutation = useMutation({
+  76 |      mutationFn: async (data: BirthdayFormValues) => {
+     |                                           ^
+  77 |        // Convert birthdate string to Date object for the API
+  78 |        const formattedData = {
+      at toParseError (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parse-error.ts:95:45)
+      at raise (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\tokenizer\index.ts:1497:19)
+      at checkRedeclarationInScope (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\util\scope.ts:155:19)
+      at declareName (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\util\scope.ts:109:12)
+      at declareName (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\scope.ts:89:11)
+      at declareNameFromIdentifier (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\lval.ts:739:16)
+      at checkIdentifier (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\lval.ts:734:12)
+      at checkLVal (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\lval.ts:636:12)
+      at parseVarId (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1605:10)
+      at parseVarId (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:3543:13)
+      at parseVar (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1558:12)
+      at parseVarStatement (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1227:10)
+      at parseVarStatement (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:3007:33)
+      at parseStatementContent (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:566:21)
+      at parseStatementContent (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:3056:20)
+      at parseStatementLike (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:437:17)
+      at parseStatementListItem (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:386:17)
+      at parseBlockOrModuleBlockBody (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1420:16)
+      at parseBlockBody (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1393:10)
+      at parseBlock (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1361:10)
+      at parseFunctionBody (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\expression.ts:2557:24)
+      at parseFunctionBodyAndFinish (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\expression.ts:2526:10)
+      at parseFunctionBodyAndFinish (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:2538:20)
+      at callback (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1667:12)
+      at withSmartMixTopicForbiddingContext (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\expression.ts:3091:14)
+      at parseFunction (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1665:10)
+      at parseExportDefaultExpression (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:2536:19)
+      at parseExportDefaultExpression (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:2998:20)
+      at parseExport (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:2420:25)
+      at parseExport (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:2968:22)
+      at parseStatementContent (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:610:25)
+      at parseStatementContent (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:3056:20)
+      at parseStatementLike (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:437:17)
+      at parseModuleItem (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:374:17)
+      at parseBlockOrModuleBlockBody (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1419:16)
+      at parseBlockBody (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:1393:10)
+      at parseProgram (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:225:10)
+      at parseTopLevel (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\statement.ts:203:25)
+      at parse (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\parser\index.ts:90:10)
+      at parse (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\plugins\typescript\index.ts:4192:20)
+      at parse (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\parser\src\index.ts:92:38)
+      at parser (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\core\src\parser\index.ts:28:19)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\core\src\transformation\normalize-file.ts:50:24)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\core\src\transformation\index.ts:40:36)
+      at run.next (<anonymous>)
+      at transform (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\@babel\core\src\transform.ts:29:20)
+      at transform.next (<anonymous>)
+      at step (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\gensync\index.js:261:32)     
+PS C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker> 
