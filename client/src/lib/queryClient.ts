@@ -14,7 +14,10 @@ export async function apiRequest(
 ): Promise<Response> {
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: {
+      ...(data && { "Content-Type": "application/json" }),
+      ...(localStorage.getItem('token') && { 'Authorization': `Bearer ${localStorage.getItem('token')}` })
+    },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });

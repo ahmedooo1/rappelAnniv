@@ -15,7 +15,9 @@ app.post("/api/auth/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Email ou mot de passe incorrect" });
     }
-    return res.json(user);
+    // Générer un token simple pour l'exemple
+    const token = Buffer.from(`${user.id}-${Date.now()}`).toString('base64');
+    return res.json({ ...user, token });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la connexion" });
   }
@@ -24,7 +26,7 @@ app.post("/api/auth/login", async (req, res) => {
 // Route d'inscription
 app.post("/api/auth/register", async (req, res) => {
   try {
-    const { email, password, role = "MEMBER" } = req.body;
+    const { email, password, role } = req.body;
     const existingUser = await storage.getUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: "Cet email est déjà utilisé" });

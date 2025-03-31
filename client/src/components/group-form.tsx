@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,9 +20,13 @@ export default function GroupForm({ onSuccess }) {
 
   const mutation = useMutation({
     mutationFn: async (values: GroupFormValues) => {
+      const token = localStorage.getItem('token');
       const response = await fetch("/api/groups", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(values),
       });
       if (!response.ok) {
