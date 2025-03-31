@@ -4,10 +4,10 @@ import * as bcrypt from 'bcryptjs';
 import * as nodemailer from 'nodemailer';
 
 const pool = mysql.createPool({
-  host: '0.0.0.0',
-  user: 'root',
-  password: '',
-  database: 'birthday_app',
+  host: process.env.MYSQL_HOST || 'localhost',
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || '',
+  database: process.env.MYSQL_DATABASE || 'birthday_app',
   waitForConnections: true,
   connectionLimit: 10,
 });
@@ -51,6 +51,12 @@ async function initDatabase() {
         FOREIGN KEY (groupId) REFERENCES groups(id)
       )
     `);
+
+    // Créer le groupe par défaut s'il n'existe pas
+    await conn.query(`
+      INSERT IGNORE INTO groups (id, name) 
+      VALUES (1, 'Groupe par défaut')
+    `);
   } finally {
     conn.release();
   }
@@ -80,6 +86,11 @@ async function getUserByEmail(email: string): Promise<User | null> {
   return rows.length > 0 ? rows[0] : null;
 }
 
+async function getUserById(id: number): Promise<User | null> {
+  const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
 // Group functions
 async function createGroup(name: string, description: string, leaderId: number): Promise<Group> {
   const [result] = await pool.query(
@@ -101,11 +112,16 @@ export async function getBirthdayById(id: number): Promise<Birthday | null> {
 }
 
 export async function createBirthday(birthday: Omit<Birthday, 'id'>): Promise<Birthday> {
-  const [result] = await pool.query(
-    'INSERT INTO birthdays (name, birthdate, groupId) VALUES (?, ?, ?)',
-    [birthday.name, birthday.birthdate, birthday.groupId]
-  );
-  return { id: result.insertId, ...birthday };
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO birthdays (name, birthdate, groupId) VALUES (?, ?, ?)',
+      [birthday.name, birthday.birthdate, birthday.groupId || 1]
+    );
+    return { id: result.insertId, ...birthday };
+  } catch (error) {
+    console.error('Erreur lors de la création:', error);
+    throw error;
+  }
 }
 
 export async function updateBirthday(id: number, birthday: Omit<Birthday, 'id'>): Promise<Birthday | null> {
@@ -139,9 +155,27 @@ const mailer = nodemailer.createTransport({
   },
 });
 
+async function getGroupById(id: number): Promise<Group | null> {
+  const [rows] = await pool.query('SELECT * FROM groups WHERE id = ?', [id]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
+async function addUserToGroup(userId: number, groupId: number): Promise<void> {
+  await pool.query('UPDATE users SET groupId = ? WHERE id = ?', [groupId, userId]);
+}
+
+async function getBirthdaysByGroup(groupId: number): Promise<Birthday[]> {
+  const [rows] = await pool.query('SELECT * FROM birthdays WHERE groupId = ?', [groupId]);
+  return rows;
+}
+
 export const storage = {
   createUser,
   validateUser,
+  getUserById,
+  getGroupById,
+  addUserToGroup,
+  getBirthdaysByGroup,
   getUserByEmail,
   createGroup,
   getAllBirthdays,
@@ -168,6 +202,18 @@ export const storage = {
         subject: `Anniversaire à venir: ${birthday.name}`,
         text: `N'oubliez pas l'anniversaire de ${birthday.name} le ${birthday.birthdate}!`,
       });
+    }
+  },
+  async validateAdminToken(token: string): Promise<User | null> {
+    try {
+      const [userId] = Buffer.from(token, 'base64').toString().split('-');
+      const user = await this.getUserById(parseInt(userId));
+      if (user && user.role === 'ADMIN') {
+        return user;
+      }
+      return null;
+    } catch {
+      return null;
     }
   }
 };
