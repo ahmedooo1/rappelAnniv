@@ -24,7 +24,7 @@ interface BirthdayFormProps {
   onSuccess: () => void;
 }
 
-export default function BirthdayForm({ onSuccess }: BirthdayFormProps) {
+export function BirthdayForm({ onSuccess }: BirthdayFormProps) {
   const { toast } = useToast();
 
   const form = useForm<BirthdayFormValues>({
