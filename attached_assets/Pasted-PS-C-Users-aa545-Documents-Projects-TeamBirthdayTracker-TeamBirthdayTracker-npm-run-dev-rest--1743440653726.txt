@@ -1,0 +1,45 @@
+PS C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker> npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+7:03:45 PM [express] serving on port 5000
+7:03:46 PM [express] GET /api/birthdays 304 in 5ms :: []
+Erreur lors de la création: Error: Cannot add or update a child row: a foreign key constraint fails (`birthday_app`.`birthdays`, CONSTRAINT `birthdays_ibfk_1` FOREIGN KEY (`groupId`) REFERENCES `groups` (`id`))
+    at PromisePool.query (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at Object.createBirthday (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\server\storage.ts:105:33)  
+    at <anonymous> (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\server\routes.ts:68:41)
+    at Layer.handle [as handle_request] (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:284:15   
+    at Function.process_params (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:280:10)
+    at <anonymous> (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\server\index.ts:36:3)
+    at Layer.handle [as handle_request] (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:286:9    
+    at Function.process_params (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\body-parser\lib\types\urlencoded.js:85:7)
+    at Layer.handle [as handle_request] (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:286:9    
+    at Function.process_params (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\express\lib\router\index.js:280:10)
+    at C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\body-parser\lib\read.js:137:5        
+    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    at invokeCallback (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\raw-body\index.js:227:7)       
+    at IncomingMessage.onEnd (C:\Users\aa545\Documents\Projects\TeamBirthdayTracker\TeamBirthdayTracker\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:519:28)
+    at endReadableNT (node:internal/streams/readable:1696:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'ER_NO_REFERENCED_ROW_2',
+  errno: 1452,
+  sql: "INSERT INTO birthdays (name, birthdate, groupId) VALUES ('Thomas Martin2', '2000-01-01', 1)",
+  sqlState: '23000',
+  sqlMessage: 'Cannot add or update a child row: a foreign key constraint fails (`birthday_app`.`birthdays`, CONSTRAINT `birthdays_ibfk_1` FOREIGN KEY (`groupId`) REFERENCES `groups` (`id`))'
+}
+7:04:01 PM [express] POST /api/birthdays 500 in 9ms :: {"message":"Erreur lors de l'ajout de l'anniv…
