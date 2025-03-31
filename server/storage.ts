@@ -51,6 +51,12 @@ async function initDatabase() {
         FOREIGN KEY (groupId) REFERENCES groups(id)
       )
     `);
+
+    // Créer le groupe par défaut s'il n'existe pas
+    await conn.query(`
+      INSERT IGNORE INTO groups (id, name) 
+      VALUES (1, 'Groupe par défaut')
+    `);
   } finally {
     conn.release();
   }
