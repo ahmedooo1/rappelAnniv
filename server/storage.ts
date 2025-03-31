@@ -86,6 +86,11 @@ async function getUserByEmail(email: string): Promise<User | null> {
   return rows.length > 0 ? rows[0] : null;
 }
 
+async function getUserById(id: number): Promise<User | null> {
+  const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
 // Group functions
 async function createGroup(name: string, description: string, leaderId: number): Promise<Group> {
   const [result] = await pool.query(
@@ -167,6 +172,7 @@ async function getBirthdaysByGroup(groupId: number): Promise<Birthday[]> {
 export const storage = {
   createUser,
   validateUser,
+  getUserById,
   getGroupById,
   addUserToGroup,
   getBirthdaysByGroup,
