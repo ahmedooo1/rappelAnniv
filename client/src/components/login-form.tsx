@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -16,6 +15,8 @@ export default function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token); //Store token in localStorage
         onSuccess();
       }
     } catch (error) {
@@ -59,6 +60,8 @@ export function LoginForm() {
       body: JSON.stringify({ email, password }),
     })
     if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.token); //Store token in localStorage
       navigate("/dashboard")
     }
   }
