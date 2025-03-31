@@ -6,7 +6,36 @@ import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Route to get all birthdays
-  app.get("/api/birthdays", async (req, res) => {
+  // Route de connexion
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await storage.validateUser(email, password);
+    if (!user) {
+      return res.status(401).json({ message: "Email ou mot de passe incorrect" });
+    }
+    return res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la connexion" });
+  }
+});
+
+// Route d'inscription
+app.post("/api/auth/register", async (req, res) => {
+  try {
+    const { email, password, role = "MEMBER" } = req.body;
+    const existingUser = await storage.getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "Cet email est déjà utilisé" });
+    }
+    const user = await storage.createUser(email, password, role);
+    return res.status(201).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de l'inscription" });
+  }
+});
+
+app.get("/api/birthdays", async (req, res) => {
     try {
       const birthdays = await storage.getAllBirthdays();
       res.json(birthdays);
