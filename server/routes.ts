@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertBirthdaySchema } from "@shared/schema";
+import { insertBirthdaySchema, insertGroupSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
+import { authenticateAdmin, authenticateGroup } from "./middleware";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Route to get all birthdays
@@ -137,5 +138,41 @@ app.get("/api/birthdays", async (req, res) => {
   });
 
   const httpServer = createServer(app);
+  // Routes pour les groupes
+  app.post("/api/groups", authenticateAdmin, async (req, res) => {
+    try {
+      const groupResult = insertGroupSchema.safeParse(req.body);
+      if (!groupResult.success) {
+        return res.status(400).json({ message: "Données invalides" });
+      }
+      const group = await storage.createGroup(groupResult.data);
+      res.status(201).json(group);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la création du groupe" });
+    }
+  });
+
+  app.get("/api/groups", async (req, res) => {
+    try {
+      const groups = await storage.getAllGroups();
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la récupération des groupes" });
+    }
+  });
+
+  app.post("/api/groups/:id/auth", async (req, res) => {
+    try {
+      const { identifier, password } = req.body;
+      const group = await storage.validateGroupAccess(parseInt(req.params.id), identifier, password);
+      if (!group) {
+        return res.status(401).json({ message: "Identifiant ou mot de passe incorrect" });
+      }
+      res.json(group);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de l'authentification" });
+    }
+  });
+
   return httpServer;
 }
