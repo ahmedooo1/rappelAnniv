@@ -13,6 +13,56 @@ const pool = mysql.createPool({
   connectionLimit: 10,
 });
 
+// Initialisation des tables
+async function initDatabase() {
+  const conn = await pool.getConnection();
+  try {
+    // Create database if not exists
+    await conn.query(`CREATE DATABASE IF NOT EXISTS ${process.env.MYSQL_DATABASE || 'birthday_app'}`);
+    await conn.query(`USE ${process.env.MYSQL_DATABASE || 'birthday_app'}`);
+    
+    // Create tables
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS groups (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        description TEXT
+      )
+    `);
+
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role ENUM('ADMIN', 'GROUP_LEADER', 'MEMBER') NOT NULL,
+        groupId INT,
+        FOREIGN KEY (groupId) REFERENCES groups(id)
+      )
+    `);
+
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS birthdays (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        birthdate DATE NOT NULL,
+        groupId INT NOT NULL,
+        FOREIGN KEY (groupId) REFERENCES groups(id)
+      )
+    `);
+    
+    console.log('Database initialized successfully');
+  } catch (err) {
+    console.error('Error initializing database:', err);
+    throw err;
+  } finally {
+    conn.release();
+  }
+}
+
+// Initialize database on startup
+initDatabase();
+
 const mailer = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
