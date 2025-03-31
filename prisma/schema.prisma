@@ -1,0 +1,36 @@
+
+// This is your Prisma schema file
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  password String
+  role     String    // "ADMIN", "GROUP_LEADER", "MEMBER"
+  group    Group?    @relation(fields: [groupId], references: [id])
+  groupId  Int?
+}
+
+model Group {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  users       User[]
+  birthdays   Birthday[]
+}
+
+model Birthday {
+  id        Int      @id @default(autoincrement())
+  name      String
+  birthdate DateTime
+  group     Group    @relation(fields: [groupId], references: [id])
+  groupId   Int
+}
