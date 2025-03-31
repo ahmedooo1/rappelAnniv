@@ -1,0 +1,27 @@
+react-dom.development.js:86  Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (http://localhost:5000/src/components/ui/input.tsx:20:11)
+    at http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/chunk-UACHJROW.js?v=5b0fe392:52:11
+    at http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/chunk-UACHJROW.js?v=5b0fe392:33:11
+    at http://localhost:5000/src/components/ui/form.tsx:127:9
+    at div
+    at http://localhost:5000/src/components/ui/form.tsx:71:6
+    at Controller (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/chunk-YABUFNLM.js?v=5b0fe392:313:35)
+    at FormField (http://localhost:5000/src/components/ui/form.tsx:32:6)
+    at form
+    at FormProvider (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/chunk-YABUFNLM.js?v=5b0fe392:102:11)
+    at div
+    at _c9 (http://localhost:5000/src/components/ui/card.tsx:106:12)
+    at div
+    at _c (http://localhost:5000/src/components/ui/card.tsx:20:11)
+    at GroupForm (http://localhost:5000/src/components/group-form.tsx?t=1743443903702:28:37)
+    at div
+    at Container (http://localhost:5000/src/components/ui/container.tsx:18:29)
+    at div
+    at Home (http://localhost:5000/src/pages/home.tsx?t=1743443903702:26:45)
+    at RenderedRoute (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/react-router-dom.js?v=5b0fe392:5761:26)
+    at Routes (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/react-router-dom.js?v=5b0fe392:6492:3)
+    at Router (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/react-router-dom.js?v=5b0fe392:6435:13)
+    at BrowserRouter (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/react-router-dom.js?v=5b0fe392:8683:3)
+    at QueryClientProvider (http://localhost:5000/@fs/C:/Users/aa545/Documents/Projects/TeamBirthdayTracker/TeamBirthdayTracker/node_modules/.vite/deps/@tanstack_react-query.js?v=5b0fe392:2805:3)
+    at App
