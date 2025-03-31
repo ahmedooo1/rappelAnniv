@@ -15,7 +15,9 @@ app.post("/api/auth/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Email ou mot de passe incorrect" });
     }
-    return res.json(user);
+    // Générer un token simple pour l'exemple
+    const token = Buffer.from(`${user.id}-${Date.now()}`).toString('base64');
+    return res.json({ ...user, token });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la connexion" });
   }
