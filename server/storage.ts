@@ -26,7 +26,8 @@ async function initDatabase() {
       CREATE TABLE IF NOT EXISTS groups (
         id INT PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(255) NOT NULL,
-        description TEXT
+        description TEXT,
+        leader_id INT
       )
     `);
 
@@ -47,8 +48,13 @@ async function initDatabase() {
         name VARCHAR(255) NOT NULL,
         birthdate DATE NOT NULL,
         groupId INT NOT NULL,
+        notified BOOLEAN DEFAULT FALSE,
         FOREIGN KEY (groupId) REFERENCES groups(id)
       )
+    `);
+
+    await conn.query(`
+      ALTER TABLE groups ADD FOREIGN KEY (leader_id) REFERENCES users(id)
     `);
     
     console.log('Database initialized successfully');
@@ -115,13 +121,43 @@ export class Storage {
     return { id: result.insertId, ...data } as Birthday;
   }
 
-  async checkUpcomingBirthdays() {
+  async getUserByEmail(email: string): Promise<User | null> {
+    const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
+    return rows[0] || null;
+}
+
+async getUsersByGroup(groupId: number): Promise<User[]> {
+    const [rows] = await pool.execute('SELECT * FROM users WHERE groupId = ?', [groupId]);
+    return rows as User[];
+}
+
+async addUserToGroup(userId: number, groupId: number): Promise<void> {
+    await pool.execute('UPDATE users SET groupId = ? WHERE id = ?', [groupId, userId]);
+}
+
+async removeUserFromGroup(userId: number): Promise<void> {
+    await pool.execute('UPDATE users SET groupId = NULL WHERE id = ?', [userId]);
+}
+
+async createAdmin(email: string, password: string): Promise<User> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const [result] = await pool.execute(
+        'INSERT INTO users (email, password, role) VALUES (?, ?, "ADMIN")',
+        [email, hashedPassword]
+    );
+    return { id: result.insertId, email, role: 'ADMIN' } as User;
+}
+
+async checkUpcomingBirthdays() {
     const [birthdays] = await pool.execute(`
-      SELECT b.*, g.*, u.email 
+      SELECT b.*, g.name as group_name, u.email 
       FROM birthdays b 
       JOIN groups g ON b.groupId = g.id 
       JOIN users u ON u.groupId = g.id 
-      WHERE DATE(b.birthdate) BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+      WHERE DATE_FORMAT(b.birthdate, '%m-%d') BETWEEN 
+        DATE_FORMAT(CURDATE(), '%m-%d') AND 
+        DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 7 DAY), '%m-%d')
+      AND b.notified = FALSE
     `);
 
     for (const birthday of birthdays) {
