@@ -20,15 +20,7 @@ export default function GroupForm({ onSuccess }) {
 
   const mutation = useMutation({
     mutationFn: async (values: GroupFormValues) => {
-      const token = localStorage.getItem('token');
-      const response = await fetch("/api/groups", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(values),
-      });
+      const response = await apiRequest("POST", "/api/groups", values);
       if (!response.ok) {
         throw new Error("Erreur lors de la création du groupe");
       }
