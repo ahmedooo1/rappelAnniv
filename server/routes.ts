@@ -26,7 +26,7 @@ app.post("/api/auth/login", async (req, res) => {
 // Route d'inscription
 app.post("/api/auth/register", async (req, res) => {
   try {
-    const { email, password, role = "MEMBER" } = req.body;
+    const { email, password, role } = req.body;
     const existingUser = await storage.getUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: "Cet email est déjà utilisé" });

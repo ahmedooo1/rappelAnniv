@@ -197,5 +197,17 @@ export const storage = {
         text: `N'oubliez pas l'anniversaire de ${birthday.name} le ${birthday.birthdate}!`,
       });
     }
+  },
+  async validateAdminToken(token: string): Promise<User | null> {
+    try {
+      const [userId] = Buffer.from(token, 'base64').toString().split('-');
+      const user = await this.getUserById(parseInt(userId));
+      if (user && user.role === 'ADMIN') {
+        return user;
+      }
+      return null;
+    } catch {
+      return null;
+    }
   }
 };
