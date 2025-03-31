@@ -16,6 +16,12 @@ export default function GroupForm({ onSuccess }) {
   const { toast } = useToast();
   const form = useForm<GroupFormValues>({
     resolver: zodResolver(insertGroupSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      identifier: '',
+      password: ''
+    }
   });
 
   const mutation = useMutation({
